@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Use Viewer to start building new applications or easily embed Cesium into existing applications."
+    />
+    <meta name="cesium-sandcastle-labels" content="Beginner, Showcases" />
+    <title>Cesium Demo</title>
+    <script type="text/javascript" src="../Sandcastle-header.js"></script>
+    <script
+      type="text/javascript"
+      src="../../../Build/CesiumUnminified/Cesium.js"
+      nomodule
+    ></script>
+    <script type="module" src="../load-cesium-es6.js"></script>
+  </head>
+  <body
+    class="sandcastle-loading"
+    data-sandcastle-bucket="bucket-requirejs.html"
+  >
+    <style>
+      @import url(../templates/bucket.css);
+    </style>
+    <div id="cesiumContainer" class="fullSize"></div>
+    <div id="loadingOverlay"><h1>Loading...</h1></div>
+    <div id="toolbar"></div>
+    <script id="cesium_sandcastle_script">
+      window.startup = async function (Cesium) {
+        "use strict";
+        //Sandcastle_Begin
+        const viewer = new Cesium.Viewer("cesiumContainer");
+        window.viewer = viewer
+        Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4ZDNhNTBkMy0xZjY4LTQ2NjQtYTQwYi03ZGZmYjVhMDg5YzMiLCJpZCI6MjMzNzE5LCJpYXQiOjE3MjMxNzM3NjZ9.1pliPetO2vHIV4UFp9-WFJq4Uo8Npey6_pJjqO_Fj_Y";
+
+        const scene = viewer.scene;
+
+// // 图片四个角的经纬度
+var west = 108.86109545157774; // 西经度
+var south = 18.355150215874858; // 南纬度
+var east = 109.85602754185899; // 东经度
+var north = 18.75050013213374; // 北纬度
+
+viewer.camera.setView({
+    destination: Cesium.Cartesian3.fromDegrees(west, south, 500000.0),  // 相机的位置（经度、纬度、高度）
+    orientation: {
+        heading: Cesium.Math.toRadians(0.0),  // 方位角
+        pitch: Cesium.Math.toRadians(-80.0),  // 俯仰角
+        roll: 0.0  // 翻滚角
+    }
+});
+
+
+
+// 创建一个实体并使用图像材质
+const entity = viewer.entities.add({
+  position: Cesium.Cartesian3.fromDegrees(west, south, ),
+  rectangle: {
+    coordinates: Cesium.Rectangle.fromDegrees(west, south, east, north),
+    material: new Cesium.ImageMaterialProperty({
+      image:
+        "http://localhost:4000/static/images/ui1/NavMenuTitleSummary.png", // 初始图像 URL
+    }),
+  },
+});
+
+// 动态更新材质中的图像
+function updateImageMaterial(newImageUrl) {
+  entity.rectangle.material = new Cesium.ImageMaterialProperty({
+    image: newImageUrl,
+  });
+}
+
+// 示例：每5秒更换图像
+let imageIndex = 0;
+const imageUrls = [
+  "http://localhost:4000/static/images/ui1/menuRadio/menuRadioBg.png",
+  "http://localhost:4000/src/assets/images/ui1/Layout_Header.png",
+];
+
+setInterval(() => {
+  imageIndex = (imageIndex + 1) % imageUrls.length;
+  updateImageMaterial(imageUrls[imageIndex]);
+}, 5000);
+
+
+        //Sandcastle_End
+      };
+
+      if (typeof Cesium !== "undefined") {
+        window.startupCalled = true;
+        window.startup(Cesium).catch((error) => {
+          "use strict";
+          console.error(error);
+        });
+        Sandcastle.finishedLoading();
+      }
+    </script>
+  </body>
+</html>
